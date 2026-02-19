@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Pinterest OAuth Callback</title></head>
+<body style="font-family: Arial; padding: 24px;">
+  <h2>Pinterest OAuth callback</h2>
+  <p><b>Full URL:</b></p>
+  <code id="full"></code>
+  <p><b>Code:</b></p>
+  <code id="code" style="font-size:18px;"></code>
+
+  <script>
+    const url = new URL(window.location.href);
+    document.getElementById('full').textContent = window.location.href;
+    document.getElementById('code').textContent = url.searchParams.get('code') || '(no code)';
+  </script>
+</body>
+</html>
