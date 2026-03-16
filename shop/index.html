@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirecting...</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      padding: 20px;
+      color: #222;
+    }
+    .small {
+      color: #666;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>Please wait a moment.</p>
+  <p class="small" id="msg">Checking product link...</p>
+
+  <script>
+    (async function () {
+      const ETSY_HOME = "https://allprintnow3d.etsy.com";
+      const REDIRECTS_URL = "/storage/redirects.json";
+
+      const msg = document.getElementById("msg");
+
+      function go(url) {
+        window.location.replace(url);
+      }
+
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const rawItem = params.get("item");
+
+        if (!rawItem) {
+          msg.textContent = "No item specified. Redirecting to shop...";
+          go(ETSY_HOME);
+          return;
+        }
+
+        const item = rawItem.trim();
+
+        const res = await fetch(REDIRECTS_URL, {
+          cache: "no-store"
+        });
+
+        if (!res.ok) {
+          msg.textContent = "Redirect table not available. Redirecting to shop...";
+          go(ETSY_HOME);
+          return;
+        }
+
+        const redirects = await res.json();
+
+        if (redirects[item]) {
+          msg.textContent = "Found product. Redirecting...";
+          go(redirects[item]);
+          return;
+        }
+
+        msg.textContent = "Product not found. Redirecting to shop...";
+        go(ETSY_HOME);
+
+      } catch (error) {
+        msg.textContent = "Error occurred. Redirecting to shop...";
+        go("https://allprintnow3d.etsy.com");
+      }
+    })();
+  </script>
+</body>
+</html>
