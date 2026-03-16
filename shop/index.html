@@ -29,7 +29,6 @@
     (async function () {
       const ETSY_HOME = "https://allprintnow3d.etsy.com";
       const REDIRECTS_URL = "/storage/redirects.json";
-
       const msg = document.getElementById("msg");
 
       function go(url) {
@@ -46,14 +45,12 @@
           return;
         }
 
-        const item = rawItem.trim();
+        const item = rawItem.trim().toLowerCase();
 
-        const res = await fetch(REDIRECTS_URL, {
-          cache: "no-store"
-        });
+        const res = await fetch(REDIRECTS_URL, { cache: "no-store" });
 
         if (!res.ok) {
-          msg.textContent = "Redirect table not available. Redirecting to shop...";
+          msg.textContent = "Redirect table unavailable. Redirecting...";
           go(ETSY_HOME);
           return;
         }
@@ -61,7 +58,7 @@
         const redirects = await res.json();
 
         if (redirects[item]) {
-          msg.textContent = "Found product. Redirecting...";
+          msg.textContent = "Product found. Redirecting...";
           go(redirects[item]);
           return;
         }
@@ -69,9 +66,9 @@
         msg.textContent = "Product not found. Redirecting to shop...";
         go(ETSY_HOME);
 
-      } catch (error) {
-        msg.textContent = "Error occurred. Redirecting to shop...";
-        go("https://allprintnow3d.etsy.com");
+      } catch (e) {
+        msg.textContent = "Unexpected error. Redirecting to shop...";
+        go(ETSY_HOME);
       }
     })();
   </script>
